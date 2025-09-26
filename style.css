@@ -31,4 +31,21 @@ img{
     min-width: 100vh;
     justify-content: center;
     align-items: center;
+    gap: 10px;
+}
+
+.number > button{
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+.number >.active{
+    background-color: rgb(73, 70, 70);
+}
+
+.number > .inactive{
+    background-color: rgb(189, 177, 177);
 }

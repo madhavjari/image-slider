@@ -7,58 +7,83 @@ function gettingCurrentImage(){
     const allImg = document.querySelectorAll('img');
     const dataId = parseInt(currPic.dataset.id);
 
-    const currNum = document.querySelector('.number > .show');
-    const numberDataId = parseInt(currNum.dataset.id);
+    const currNum = document.querySelector('.number > .active');
 
     allImg.forEach(() => {
         count++;
     })
-    return {currPic,currNum,dataId,numberDataId,count};
+    return {currPic,currNum,dataId,count};
 }
 
-function changingImage(count,previousDataId,changeDataId,currPic,currNum){
-    if(previousDataId === 1 && previousDataId > changeDataId){
-        const showPic = document.querySelector(`img[data-id="${count}"]`);
-        showPic.classList.remove('hide');
-        showPic.classList.add('show');
-        currPic.classList.remove('show');
-        currPic.classList.add('hide');
-
-        const showNum = document.querySelector(`.number>div[data-id="${count}"]`);
-        showNum.classList.remove('hide');
-        showNum.classList.add('show');
-        currNum.classList.remove('show');
-        currNum.classList.add('hide');
-    }
-    else if (previousDataId === count && changeDataId > previousDataId){
-        const showPic = document.querySelector(`img[data-id="${dataId+1}"]`);
-        showPic.classList.remove('hide');
-        showPic.classList.add('show');
-        currPic.classList.remove('show');
-        currPic.classList.add('hide');
-
-        const showNum = document.querySelector(`.number>div[data-id="${dataId+1}"]`);
-        showNum.classList.remove('hide');
-        showNum.classList.add('show');
-        currNum.classList.remove('show');
-        currNum.classList.add('hide');        
-    }
+function changeClass(newPic,current,class1,class2){
+    newPic.classList.remove(class1);
+    newPic.classList.add(class2);
+    current.classList.remove(class2);
+    current.classList.add(class1);
 }
 
-leftBtn.addEventListener('click', () =>{
+function changingImage(pos){
     const currentImage =  gettingCurrentImage();
 
     const count = currentImage.count;
     const previousDataId = currentImage.dataId;
-    let changeDataId = previousDataId + 1;
+    const changeDataId = previousDataId + pos;
     const currPic = currentImage.currPic;
     const currNum = currentImage.currNum;
+    console.log('hi');
 
-    changingImage(count,previousDataId,changeDataId,currPic,currNum);
+    if(previousDataId === 1 && previousDataId > changeDataId){
+        const showPic = document.querySelector(`img[data-id="${count}"]`);
+        changeClass(showPic,currPic,'hide','show');
 
-    gettingCurrentImage.count = 0;
+        const showNum = document.querySelector(`.number>button[data-id="${count}"]`);
+        changeClass(showNum,currNum,'inactive','active');
+    }
+    else if (previousDataId === count && changeDataId > previousDataId){
+        const showPic = document.querySelector(`img[data-id="${1}"]`);
+        changeClass(showPic,currPic,'hide','show');
+
+        const showNum = document.querySelector(`.number>button[data-id="${1}"]`);
+        changeClass(showNum,currNum,'inactive','active');     
+    }
+    else{
+        const showPic = document.querySelector(`img[data-id="${changeDataId}"]`);
+        changeClass(showPic,currPic,'hide','show');
+
+        const showNum = document.querySelector(`.number>button[data-id="${changeDataId}"]`);
+        changeClass(showNum,currNum,'inactive','active');
+    }
+    currentImage.count = 0;
+}
+
+leftBtn.addEventListener('click', () =>{
+    changingImage(-1);
 })
 
-//rightBtn.addEventListener('click', slide);
+rightBtn.addEventListener('click', () => {
+    changingImage(1);
+});
 
-setInterval(slide,2000);
+const circles = document.querySelectorAll('.number>button');
+circles.forEach(circle => {
+    circle.addEventListener('click', (e) => {
+        const clickedDataId = parseInt(e.target.dataset.id);
+        const currentImage = gettingCurrentImage();
+        const changeDataId = clickedDataId;
+        const currPic = currentImage.currPic;
+        const currNum = currentImage.currNum;
+        const currId = currentImage.dataId;
+        console.log('curr',currId);
+        console.log('to change',changeDataId); 
+
+        if(changeDataId !== currId){
+            const showPic = document.querySelector(`img[data-id="${changeDataId}"]`);
+            changeClass(showPic,currPic,'hide','show');
+
+            const showNum = document.querySelector(`.number>button[data-id="${changeDataId}"]`);
+            changeClass(showNum,currNum,'inactive','active');
+        }
+    })
+})
+
+setInterval(changingImage,5000,1);
